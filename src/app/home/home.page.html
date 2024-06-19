@@ -21,20 +21,37 @@
   <ion-list>
     <ion-label>Postagem</ion-label>
     <ion-input [(ngModel)] = "postagemDados.postagem"></ion-input>
-    
+    <ion-label>Selecione arquivos (até 4)</ion-label>
+    <input type="file" (change)="onFileSelected($event)" multiple>
     <ion-button (click)="create()">Postar</ion-button>
-
+    
   
   </ion-list>
   <ion-list>
     <ion-item *ngFor="let postagem of postagens">
+      <ion-list>
+        <ion-item>
      {{postagem.idPostagem}}  {{postagem.textoPostagem}}
+    </ion-item>
+    <ion-item>
+      <div *ngFor="let file of postagem.files">
+        <div *ngIf="file.path">
+          <ng-container *ngIf="isImage(file.path); else notImage">
+            <img [src]="file.path" alt="Thumbnail" width="100">
+          </ng-container>
+          <ng-template #notImage>
+            <a [href]="file.path" target="_blank">
+              <ion-icon name="document"></ion-icon> {{ file.name }}
+            </a>
+          </ng-template>
+        </div>
+      </div>
+    </ion-item>
+    </ion-list>
     </ion-item>
   </ion-list>
 
    <!-- A lista ABAIXO é uma lista com dados mockados que já veio no template na criação do projeto.
     Isso será removido eventualmente e se quiserem já remover fiquem a vontade-->
-  <ion-list>
-    <app-message *ngFor="let message of getMessages()" [message]="message"></app-message>
-  </ion-list>
+  
 </ion-content>
