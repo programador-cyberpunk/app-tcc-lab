@@ -31,7 +31,7 @@
     <ion-item *ngFor="let postagem of postagens">
       <ion-list>
         <ion-item>
-     {{postagem.idPostagem}}  {{postagem.textoPostagem}}
+     <p>{{postagem.textoPostagem}}</p> 
     </ion-item>
     <ion-item>
       <div *ngFor="let file of postagem.files">
@@ -51,7 +51,7 @@
     </ion-item>
   </ion-list>
 
-   <!-- A lista ABAIXO é uma lista com dados mockados que já veio no template na criação do projeto.
-    Isso será removido eventualmente e se quiserem já remover fiquem a vontade-->
+   
   
 </ion-content>
+
