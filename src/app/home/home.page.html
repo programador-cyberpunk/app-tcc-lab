@@ -20,38 +20,33 @@
   </ion-header>
   <ion-list>
     <ion-label>Postagem</ion-label>
-    <ion-input [(ngModel)] = "postagemDados.postagem"></ion-input>
+    <ion-input [(ngModel)]="postagemDados.postagem"></ion-input>
     <ion-label>Selecione arquivos (até 4)</ion-label>
     <input type="file" (change)="onFileSelected($event)" multiple>
-    <ion-button (click)="create()">Postar</ion-button>
-    
-  
+    <ion-button (click)="createOrUpdate()">{{ isEditing ? 'Atualizar' : 'Postar' }}</ion-button>
   </ion-list>
   <ion-list>
     <ion-item *ngFor="let postagem of postagens">
       <ion-list>
         <ion-item>
-     <p>{{postagem.textoPostagem}}</p> 
-    </ion-item>
-    <ion-item>
-      <div *ngFor="let file of postagem.files">
-        <div *ngIf="file.path">
-          <ng-container *ngIf="isImage(file.path); else notImage">
-            <img [src]="file.path" alt="Thumbnail" width="100">
-          </ng-container>
-          <ng-template #notImage>
-            <a [href]="file.path" target="_blank">
-              <ion-icon name="document"></ion-icon> {{ file.name }}
-            </a>
-          </ng-template>
-        </div>
-      </div>
-    </ion-item>
-    </ion-list>
+          <p>{{ postagem.textoPostagem }}</p>
+          <ion-button (click)="editPostagem(postagem)">Editar</ion-button>
+        </ion-item>
+        <ion-item>
+          <div *ngFor="let file of postagem.files">
+            <div *ngIf="file.path">
+              <ng-container *ngIf="isImage(file.path); else notImage">
+                <img [src]="file.path" alt="Thumbnail" width="100">
+              </ng-container>
+              <ng-template #notImage>
+                <a [href]="file.path" target="_blank">
+                  <ion-icon name="document"></ion-icon> {{ file.name }}
+                </a>
+              </ng-template>
+            </div>
+          </div>
+        </ion-item>
+      </ion-list>
     </ion-item>
   </ion-list>
-
-   
-  
 </ion-content>
-

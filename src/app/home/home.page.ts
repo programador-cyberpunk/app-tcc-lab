@@ -1,20 +1,20 @@
 import { Component, inject } from '@angular/core';
 import { RefresherCustomEvent } from '@ionic/angular';
-import { MessageComponent } from '../message/message.component';
-import { HttpClient } from '@angular/common/http';
-import { DataService, Message } from '../services/data.service';
+import { DataService } from '../services/data.service';
 import axios from 'axios';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-
-
 export class HomePage {
   postagem: string = '';
   postagens: any = [];
   selectedFiles: any = [];
+  isEditing: boolean = false;
+  editingPostagemId: number | null = null;
+
   private data = inject(DataService);
 
   constructor() {
@@ -31,13 +31,13 @@ export class HomePage {
     }, 3000);
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   onFileSelected(event: any) {
     this.selectedFiles = Array.from(event.target.files).slice(0, 4);
   }
 
-  async create() {
+  async createOrUpdate() {
     const formData = new FormData();
     formData.append('postagem', this.postagemDados.postagem);
 
@@ -46,13 +46,27 @@ export class HomePage {
     });
 
     try {
-      const response = await axios.post("https://localhost/postagemConn.php", formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      console.log(response);
-      this.pegaPostagem(); // Refresh postagens list after creating a new one
+      if (this.isEditing && this.editingPostagemId !== null) {
+        formData.append('id', this.editingPostagemId.toString());
+        const response = await axios.post("https://localhost/postagemConn.php", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log(response);
+        this.isEditing = false;
+        this.editingPostagemId = null;
+      } else {
+        const response = await axios.post("https://localhost/postagemConn.php", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log(response);
+      }
+      this.postagemDados.postagem = '';  // Reset the input field
+      this.selectedFiles = [];  // Reset the file input
+      this.pegaPostagem(); // Refresh postagens list after creating or updating a post
     } catch (error) {
       console.log(error);
     }
@@ -76,9 +90,20 @@ export class HomePage {
       console.log(error);
     }
   }
+
+  editPostagem(postagem: any) {
+    this.isEditing = true;
+    this.editingPostagemId = postagem.idPostagem;
+    this.postagemDados.postagem = postagem.textoPostagem;
+    this.selectedFiles = []; // Clear the selected files for editing
+    postagem.files.forEach((file: any, index: number) => {
+      if (file.path) {
+        this.selectedFiles.push(file);
+      }
+    });
+  }
+
   isImage(filePath: string): boolean {
     return /\.(jpg|jpeg|png|gif)$/i.test(filePath);
   }
 }
-
-
