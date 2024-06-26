@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RefresherCustomEvent } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
 import { DataService } from '../services/data.service';
 import axios from 'axios';
 
@@ -12,8 +13,8 @@ export class HomePage {
   postagem: string = '';
   postagens: any = [];
   selectedFiles: any = [];
+  userId: string | null = localStorage.getItem('userId'); // Use userId from localStorage
   isEditing: boolean = false;
-  editingPostagemId: number | null = null;
 
   private data = inject(DataService);
 
@@ -22,7 +23,8 @@ export class HomePage {
   }
 
   postagemDados = {
-    postagem: ""
+    postagem: "",
+    id: null as number | null
   }
 
   refresh(ev: any) {
@@ -31,7 +33,7 @@ export class HomePage {
     }, 3000);
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   onFileSelected(event: any) {
     this.selectedFiles = Array.from(event.target.files).slice(0, 4);
@@ -41,32 +43,42 @@ export class HomePage {
     const formData = new FormData();
     formData.append('postagem', this.postagemDados.postagem);
 
+    if (this.userId) {
+      formData.append('idUsuario', this.userId); // Adiciona o idUsuario ao formData
+    }
+
+    if (this.postagemDados.id !== null && this.postagemDados.id !== undefined) {
+      formData.append('id', this.postagemDados.id.toString());
+    }
+
     this.selectedFiles.forEach((file: string | Blob, index: number) => {
       formData.append(`file${index + 1}`, file);
     });
 
     try {
-      if (this.isEditing && this.editingPostagemId !== null) {
-        formData.append('id', this.editingPostagemId.toString());
-        const response = await axios.post("https://localhost/postagemConn.php", formData, {
+      let response;
+      if (this.isEditing) {
+        // Editar a postagem existente
+        console.log("entrou no editar");
+        
+        response = await axios.post("https://localhost/postagemConn.php", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log(response);
-        this.isEditing = false;
-        this.editingPostagemId = null;
       } else {
-        const response = await axios.post("https://localhost/postagemConn.php", formData, {
+        // Criar nova postagem
+        console.log("entrou no inserir");
+        response = await axios.post("https://localhost/postagemConn.php", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log(response);
       }
-      this.postagemDados.postagem = '';  // Reset the input field
-      this.selectedFiles = [];  // Reset the file input
-      this.pegaPostagem(); // Refresh postagens list after creating or updating a post
+      
+      console.log(response);
+      this.pegaPostagem(); // Refresh postagens list after creating or updating a new one
+      this.resetForm(); // Reset the form after successful create or update
     } catch (error) {
       console.log(error);
     }
@@ -91,19 +103,24 @@ export class HomePage {
     }
   }
 
-  editPostagem(postagem: any) {
-    this.isEditing = true;
-    this.editingPostagemId = postagem.idPostagem;
-    this.postagemDados.postagem = postagem.textoPostagem;
-    this.selectedFiles = []; // Clear the selected files for editing
-    postagem.files.forEach((file: any, index: number) => {
-      if (file.path) {
-        this.selectedFiles.push(file);
-      }
-    });
-  }
-
   isImage(filePath: string): boolean {
     return /\.(jpg|jpeg|png|gif)$/i.test(filePath);
+  }
+
+  editPostagem(postagem: any) {
+    this.isEditing = true;
+    this.postagemDados = {
+      postagem: postagem.textoPostagem,
+      id: postagem.idPostagem
+    };
+  }
+
+  resetForm() {
+    this.isEditing = false;
+    this.postagemDados = {
+      postagem: "",
+      id: null
+    };
+    this.selectedFiles = [];
   }
 }

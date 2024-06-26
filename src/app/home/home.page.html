@@ -10,7 +10,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  
+
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">
@@ -18,6 +18,7 @@
       </ion-title>
     </ion-toolbar>
   </ion-header>
+  
   <ion-list>
     <ion-label>Postagem</ion-label>
     <ion-input [(ngModel)]="postagemDados.postagem"></ion-input>
@@ -25,11 +26,19 @@
     <input type="file" (change)="onFileSelected($event)" multiple>
     <ion-button (click)="createOrUpdate()">{{ isEditing ? 'Atualizar' : 'Postar' }}</ion-button>
   </ion-list>
+
   <ion-list>
     <ion-item *ngFor="let postagem of postagens">
       <ion-list>
         <ion-item>
-          <p>{{ postagem.textoPostagem }}</p>
+          <p>postado por {{ postagem.usuario }} em {{ postagem.dataHora}} </p> 
+           
+          
+        </ion-item>
+        <ion-item>
+          
+          <p>{{ postagem.idPostagem}} {{ postagem.textoPostagem }}</p> 
+
           <ion-button (click)="editPostagem(postagem)">Editar</ion-button>
         </ion-item>
         <ion-item>
