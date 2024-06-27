@@ -1,0 +1,70 @@
+<ion-header [translucent]="true">
+  <ion-icon name="person-circle-outline"></ion-icon>
+  <ion-toolbar>
+    <ion-title>
+      Inbox
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+          <!---so pra ficar mais legível----->
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+            <!---so pra ficar mais legível----->
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">
+        Inbox
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-item-group>
+  <ion-item-divider>
+  <ion-list>
+    <ion-label><h1>Postagem</h1></ion-label>
+    <ion-input [(ngModel)]="postagemDados.postagem"></ion-input><br>
+    <ion-label><h2>Selecione até 4 (quatro) arquivos</h2></ion-label><br>
+    <input type="file" (change)="onFileSelected($event)" multiple>
+    <ion-button (click)="createOrUpdate()">{{ isEditing ? 'Atualizar' : 'Postar' }}</ion-button><br>
+    <ion-icon name="add-circle-outline" color="danger"></ion-icon>
+  </ion-list>
+</ion-item-divider>
+</ion-item-group>
+          <!---so pra ficar mais legível----->
+<ion-item-group>
+  <ion-list>
+    <ion-item-divider>
+    <ion-item *ngFor="let postagem of postagens">
+      <ion-list>
+        <ion-item>
+          <p>Postado por {{ postagem.usuario }} em {{ postagem.dataHora}} </p><br>
+           
+        </ion-item>
+        <ion-item>
+          
+          <p>{{ postagem.idPostagem}} {{ postagem.textoPostagem }}</p> 
+
+          <ion-button (click)="editPostagem(postagem)">Editar</ion-button><br>
+        </ion-item>
+        <ion-item>
+          
+          <div *ngFor="let file of postagem.files">
+            <div *ngIf="file.path">
+              <ng-container *ngIf="isImage(file.path); else notImage">
+                <img [src]="file.path" alt="Thumbnail" width="100">
+              </ng-container>
+              <ng-template #notImage>
+                <a [href]="file.path" target="_blank">
+                  <ion-icon name="document"></ion-icon> {{ file.name }}
+                </a>
+              </ng-template>
+            </div>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-item>
+  </ion-item-divider>
+  </ion-list>
+</ion-item-group>
+</ion-content>

@@ -1,0 +1,61 @@
+// pra eu não esquecer
+$primary-color: #3880ff;
+$secondary-color: #0cd1e8;
+$background-color: #f4f5f8;
+$text-color: #000;
+$input-background-color: #090875;
+$input-border-color: #ddd;
+$button-color: $primary-color;
+$button-text-color: #fff;
+
+// Estilos globais
+body {
+    $background-color: #391dd4;
+  font-family: Arial, sans-serif;
+   $text-color:#000;
+}
+
+// Estilos para o ion-header
+ion-header {
+  --background: $primary-color #3880ff;;
+  ion-title {
+    color: $button-text-color;
+  }
+}
+
+// Estilos para o ion-content
+ion-content {
+  padding: 16px;
+  
+
+  ion-list {
+    margin-top: 20px;
+    -background-color: #3880ff;
+
+    ion-item {
+      $background-color: #391dd4;
+      --border-color:#090875;
+      margin-bottom: 20px;
+      $button-color:#1682e7;
+      ion-label {
+        font-size: 16px;
+        color: rgb(0, 0, 0);
+      }
+      
+      ion-input {
+        -padding-start: 10px;
+        -padding-end: 10px;
+        $text-color: #000;
+        $button-color:#1682e7;
+      }
+    }
+  }
+  
+
+  ion-button {
+    --background: #1b2581;
+    --color: #1800f5;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,42 @@
+
+body{
+   color: rgb(45, 104, 230); 
+}
+ion-content{
+ padding: 16px;
+
+ ion-list {
+    background-color: rgb(46, 90, 131); 
+    margin-top: 20px;
+    $button-color:#1682e7;
+}
+
+ion-title {
+ background-color: rgb(45, 39, 131); ;
+padding: 12px;
+}
+
+ion-title {
+    font-weight: bold;
+    color: whitesmoke;
+    
+}
+
+ion-label {
+    font-size: 16px;
+    color: rgb(0, 0, 0);
+    $button-color:#1682e7;
+  }
+
+
+p {
+    display: flexbox;
+    align-content: center;
+}
+ion-input{
+    -padding-start: 10px;
+    -padding-end: 10px;
+    $text-color: #000000;
+    $button-color:#1682e7;
+}
+}
